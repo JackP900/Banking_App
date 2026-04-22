@@ -123,13 +123,10 @@ def show_credit(user):
 
     put_button("Back", onclick=lambda: show_products(user))
 
-
-
-
 def login():
     put_button("Register", onclick=lambda: show_register())
     put_button("Forgot Password", onclick=lambda: show_fpassword())
-    
+
     attempts = 0
 
     while attempts < 3:
@@ -146,5 +143,68 @@ def login():
         attempts += 1
         put_markdown(f"Wrong Credentials {3 - attempts} left")
     put_markdown("Account Locked!")
+
+
+def show_fpassword():
+    clear()
+    put_markdown("Username")
+    
+    name = input("Name")
+
+    if name == "":
+        put_markdown("Invalid name")
+    else:
+        for user in users:
+            if name == user.username:
+                
+                data = input_group("New Password", [
+                    input("New Password", name="new_password"),
+                    input("Confirm Password", name="confirm_password")
+                ])
+
+                if data["new_password"] == "":
+                    put_markdown("Invalid password")
+                elif data["confirm_password"] == "":
+                    put_markdown("Invalid")
+                elif data["new_password"] != data["confirm_password"]:
+                    put_markdown("Passwords don't match")
+                else:
+                    user.password = data["new_password"]
+                    put_markdown("Password Updated Successfully")
+                    put_button("Next", onclick=lambda: login())
+                    return
+                
+        put_markdown("Invalid Username")
+        return
             
 
+
+
+
+
+def show_register():
+    clear()
+    put_markdown("Register")
+
+    data = input_group("Register User", [
+        input("Name", name="name"),
+        input("Password", name="password", type=PASSWORD),
+        input("Confirm Password", name="confirm_password")
+    ])
+
+    if data["name"] == "":
+        put_markdown("Enter valid name")
+    elif data["password"] == "":
+        put_markdown("Enter valid password")
+    elif data["password"] != data["confirm_password"]:
+        put_markdown("Passwords don't match")
+    else:
+        for user in users:
+            if data["name"] == user.username:
+                put_markdown("Username already exists")
+                return
+    
+        new_user = User(data["name"], data["password"])
+        users.append(new_user)
+    
+        put_button("Continue", onclick=lambda: login())
