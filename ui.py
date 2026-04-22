@@ -1,5 +1,5 @@
-from pywebio.input import input, PASSWORD, input_group
-from pywebio.output import put_text, put_markdown, put_button, clear
+from pywebio.input import input, PASSWORD, input_group, select, NUMBER
+from pywebio.output import put_text, put_markdown, put_button, clear, put_image
 from models import Payee, User
 
 
@@ -59,33 +59,92 @@ def show_newpayee(user):
 
     put_markdown(message)
 
+def show_send_money(user):
+    clear()
+    put_markdown("Send Money")
+
+    payee_options = [payee.name for payee in user.payees]
+
+    data = input_group("send Money", [
+        select("Select Payee", options=payee_options, name="payee"),
+        input("Amount", name="amount", type=NUMBER)
+    ])
+
+    money_payee = data["payee"]
+    money = float(data["amount"])
+
+    message = user.send_money(money, money_payee)
+    put_markdown(message)
+    put_button("Return", onclick=lambda: show_account(user))
+
 def show_products(user):
     clear()
-    put_markdown("Product Page")
+    put_markdown("Products")
 
     put_markdown("Loans")
     put_markdown("Click below to look at loan options")
-    put_button("Loan", onclick=lambda: show_loan())
+    put_button("Loan", onclick=lambda: show_loan(user))
 
     put_markdown("Mortgages")
     put_markdown("Click below to look at mortgages options")
-    put_button("Mortgages", onclick=lambda: show_mortgages())
+    put_button("Mortgages", onclick=lambda: show_mortgages(user))
 
     put_markdown("Credit Cards")
     put_markdown("Click below to look at credit card options")
-    put_button("Credit Card", onclick=lambda: show_credit())
+    put_button("Credit Card", onclick=lambda: show_credit(user))
 
     put_button("Home", onclick=lambda: show_account(user))
 
-def login():
-    username = input("username")
-    password = input("password", type=PASSWORD)
+def show_loan(user):
+    clear()
+    put_markdown("Loans")
+    put_image("https://www.picpedia.org/chalkboard/images/loan.jpg")
+    put_markdown("Loan Options:")
 
-    for user in users:
-        if user.username == username and user.password == password:
-            put_text("login successful")
-            return user
+    put_markdown("Personal Loans:")
+    put_markdown("Borrow between £1,000 - £25,000.")
+
+    put_markdown("Student Loans:")
+    put_markdown("We have flexible repayment options.")
+
+    put_button("Back", onclick=lambda: show_products(user))
+
+def show_mortgages(user):
+    clear()
+    put_markdown("Mortgages")
+    put_markdown("Coming Soon")
+
+    put_button("Back", onclick=lambda: show_products(user))
+
+def show_credit(user):
+    clear()
+    put_markdown("Credit Cards")
+    put_markdown("Coming Soon")
+
+    put_button("Back", onclick=lambda: show_products(user))
+
+
+
+
+def login():
+    put_button("Register", onclick=lambda: show_register())
+    put_button("Forgot Password", onclick=lambda: show_fpassword())
     
-    put_text("Wrong Credentials")
+    attempts = 0
+
+    while attempts < 3:
+
+        username = input("username")
+        password = input("password", type=PASSWORD)
+
+        for user in users:
+            if user.username == username and user.password == password:
+                put_markdown("Login Success")
+                show_account(user)
+                return user
+        
+        attempts += 1
+        put_markdown(f"Wrong Credentials {3 - attempts} left")
+    put_markdown("Account Locked!")
             
 
