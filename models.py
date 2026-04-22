@@ -31,23 +31,23 @@ class User:
 
     def add_payee(self, account_num, sort_code, name, bank):
         if account_num == "":
-            print("Account number invalid")
+            return("Account number invalid")
         elif sort_code == "":
-            print("sort code invalid")
+            return("sort code invalid")
         elif name == "":
-            print("Name is invalid")
+            return("Name is invalid")
         elif bank == "":
-            print("bank is invalid")
+            return("bank is invalid")
         else:
-            print("Success")
             new_payee = Payee(sort_code, account_num, name, bank)
             self.payees.append(new_payee)
+            return("Success")
 
     def send_money(self, amount, payee):
         if amount <= 0:
-            print("Invalid amount")
+            return("Invalid amount")
         elif self.accounts["current"]["balance"] < amount:
-            print("Insufficient funds")
+            return("Insufficient funds")
         else:
             self.accounts["current"]["balance"] -= amount
 
@@ -60,16 +60,16 @@ class User:
 
             self.transactions.append(transaction)
 
-            print('Success')
+            return("Success")
 
     def move_money(self, amount, from_account, to_account):
         if amount <= 0:
-            print("invalid amount")
+            return("invalid amount")
         else:
             if from_account == self.accounts["current"]:
 
                 if self.accounts["current"]["balance"] < amount:
-                    print("Insufficient funds")
+                    return("Insufficient funds")
 
                 else:
 
@@ -86,12 +86,12 @@ class User:
                     
                     self.transactions.append(transaction)
 
-                    print("Success")
+                    return("Success")
 
             elif from_account == self.accounts["savings"]:
 
                 if self.accounts["savings"]["balance"] < amount:
-                    print("Insufficient fund")
+                    return("Insufficient fund")
 
                 else:
                     self.accounts["savings"]["balance"] -= amount
@@ -107,4 +107,4 @@ class User:
                     
                     self.transactions.append(transaction)
 
-                    print("Success")
+                    return("Success")

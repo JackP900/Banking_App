@@ -1,6 +1,7 @@
-from pywebio.input import input, PASSWORD
-from pywebio.output import put_text, put_markdown, put_button
+from pywebio.input import input, PASSWORD, input_group
+from pywebio.output import put_text, put_markdown, put_button, clear
 from models import Payee, User
+
 
 users = []
 
@@ -35,6 +36,46 @@ def show_payment(user):
     put_button("Add new payee", onclick=lambda: show_newpayee(user))
     put_button("Cancel", onclick=lambda: show_account(user))
 
+def show_newpayee(user):
+    clear()
+    message = user.add_payee()
+    put_markdown("New Payee Pagw")
+
+    data = input_group("New Payee Details", [
+
+            input("Payee Name", name="name"),
+            input("Bank", name="bank"),
+            input("Account Number", name="account_num"),
+            input("Sort Code", name="sort_code")
+    ])
+
+    user.add_payee(
+
+        account_num = data["account_num"],
+        sort_code = data["sort_code"],
+        name = data["name"],
+        bank = data["bank"]
+    )
+
+    put_markdown(message)
+
+def show_products(user):
+    clear()
+    put_markdown("Product Page")
+
+    put_markdown("Loans")
+    put_markdown("Click below to look at loan options")
+    put_button("Loan", onclick=lambda: show_loan())
+
+    put_markdown("Mortgages")
+    put_markdown("Click below to look at mortgages options")
+    put_button("Mortgages", onclick=lambda: show_mortgages())
+
+    put_markdown("Credit Cards")
+    put_markdown("Click below to look at credit card options")
+    put_button("Credit Card", onclick=lambda: show_credit())
+
+    put_button("Home", onclick=lambda: show_account(user))
 
 def login():
     username = input("username")
