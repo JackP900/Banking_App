@@ -5,12 +5,8 @@ from models import Payee, User
 
 users = []
 
-test_user = User(username="admin", password="password")
-users.append(test_user)
-
-
-
 def show_account(user):
+    clear()
     put_markdown("# 🏦 Banking App")
 
     put_markdown("Account 1")
@@ -23,7 +19,7 @@ def show_account(user):
 
     put_button("Home", onclick=lambda: show_account(user))
     put_button("Payments", onclick=lambda: show_payment(user))
-    put_button("Product", onclick=lambda: show_product(user))
+    put_button("Product", onclick=lambda: show_products(user))
 
 def show_payment(user):
     clear()
@@ -38,8 +34,7 @@ def show_payment(user):
 
 def show_newpayee(user):
     clear()
-    message = user.add_payee()
-    put_markdown("New Payee Pagw")
+    put_markdown("New Payee Page")
 
     data = input_group("New Payee Details", [
 
@@ -49,7 +44,7 @@ def show_newpayee(user):
             input("Sort Code", name="sort_code")
     ])
 
-    user.add_payee(
+    message = user.add_payee(
 
         account_num = data["account_num"],
         sort_code = data["sort_code"],
@@ -58,6 +53,7 @@ def show_newpayee(user):
     )
 
     put_markdown(message)
+    put_button("Home", onclick=lambda: show_account(user))
 
 def show_send_money(user):
     clear()
@@ -95,7 +91,6 @@ def show_move_money(user):
     put_markdown(message)
 
     put_button("Next", onclick=lambda: show_account(user))
-
 
 def show_products(user):
     clear()
@@ -144,6 +139,7 @@ def show_credit(user):
     put_button("Back", onclick=lambda: show_products(user))
 
 def login():
+    clear()
     put_button("Register", onclick=lambda: show_register())
     put_button("Forgot Password", onclick=lambda: show_fpassword())
 
