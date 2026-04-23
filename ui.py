@@ -77,6 +77,26 @@ def show_send_money(user):
     put_markdown(message)
     put_button("Return", onclick=lambda: show_account(user))
 
+def show_move_money(user):
+    clear()
+    put_markdown("Move Money")
+
+    data = input_group("Move Money", [
+        select("From Account", options=["current", "savings"], name="from_account"),
+        select("To Account", options=["current", "savings"], name="to_account"),
+        input("Amount", name="amount", type=NUMBER)
+    ])
+
+    from_account = user.accounts[data["from_account"]]
+    to_account = user.accounts[data["to_account"]]
+    amount = [float(data["amount"])]
+
+    message = user.move_money(amount, from_account, to_account)
+    put_markdown(message)
+
+    put_button("Next", onclick=lambda: show_account(user))
+
+
 def show_products(user):
     clear()
     put_markdown("Products")
@@ -144,7 +164,6 @@ def login():
         put_markdown(f"Wrong Credentials {3 - attempts} left")
     put_markdown("Account Locked!")
 
-
 def show_fpassword():
     clear()
     put_markdown("Username")
@@ -177,11 +196,6 @@ def show_fpassword():
         put_markdown("Invalid Username")
         return
             
-
-
-
-
-
 def show_register():
     clear()
     put_markdown("Register")
